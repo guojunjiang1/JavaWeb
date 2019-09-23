@@ -1,4 +1,4 @@
-package util;
+﻿package util;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -9,7 +9,7 @@ import java.util.Properties;
  * 发邮件工具类
  */
 public final class MailUtils {
-    private static final String USER = "1040231235@qq.com";
+    private static final String USER = "XXXXXXX@qq.com";
     private static final String PASSWORD = "nfmdvutkyjhibeid";
 
     /**
@@ -69,7 +69,7 @@ public final class MailUtils {
 
     public static void main(String[] args) throws Exception {
         //收件人地址，内容，标题
-        MailUtils.sendMail("3147342661@qq.com","你好，这是一封测试邮件，无需回复。","测试邮件");
+        MailUtils.sendMail("XXXXX","你好，这是一封测试邮件，无需回复。","测试邮件");
         System.out.println("发送成功");
     }
 
