@@ -1,0 +1,90 @@
+<!-- 头部 start -->
+<!--所有页面的头部-->
+<script src="js/getParameter.js"></script>
+    <script>
+        $(function () {
+            //用户登录后，设置为登录的样子并显示用户名
+            $.post("user/findUserNameServlet",function (data) {
+                //如果没有json返回值就不会执行回调函数
+                $("#two").css("display","inline");//显示
+                $("#one").css("display","none");//不显示
+                var msg="欢迎:"+data.username;
+                $("#spanusername").html(msg);
+            },"json");
+            //退出功能
+            $("#a").click(function () {
+                $.post("user/exitServlet",function () {
+                 location.href="login.html";
+                });
+            });
+            //展示分类
+            $.post("category/findAllServlet",function (data) {
+               var a='<li><a href="index.html">首页</a></li>';
+               for (var i=0;i<data.length;i++){
+                   var b='<li><a href="route_list.html?cid='+data[i].cid+'">'+data[i].cname+'</a></li>';
+                   a+=b;
+               }
+               $("#guo").html(a);
+            },"json");
+            //搜索信息
+            $("#go").click(function () {
+                var text=$("#value").val();//获取输入的内容
+                var cid=getParameter("cid");//获取页面?后cid的值
+                location.href='route_list.html?cid='+cid+'&name='+text+'';
+            });
+            //查看我的收藏
+            $("#sc").click(function () {
+                $.post("collect/findUser",function (data) {
+                    if(data.flag){
+                        var uid=data.data;
+                        location.href='myfavorite.html?uid='+uid+'';
+                    }
+                },"json")
+            })
+        });
+    </script>
+    <header id="header">
+        <div class="top_banner">
+            <img src="images/top_banner.jpg" alt="">
+        </div>
+        <div class="shortcut">
+            <!-- 未登录状态  -->
+            <div id="one" class="login_out" >
+                <a href="login.html">登录</a>
+                <a href="register.html">注册</a>
+            </div>
+            <!-- 登录状态  -->
+            <div id="two" class="login" style="display: none">
+                <span id="spanusername"></span>
+                <a href="#" class="collection" id="sc">我的收藏</a>
+                <a href="#" style="color: red" id="a">退出</a>
+            </div>
+        </div>
+        <div class="header_wrap">
+            <div class="topbar">
+                <div class="logo" >
+                    <a href="/"><img src="images/0.jpg" alt=""></a>
+                </div>
+                <div class="search">
+                    <input name="" type="text" id="value" placeholder="请输入路线名称" class="search_input" autocomplete="off">
+                    <a href="javascript:;" class="search-button" id="go">搜索</a>
+                </div>
+                <div class="hottel">
+                    <div class="hot_pic">
+                        <img src="images/hot_tel.jpg" alt="">
+                    </div>
+                    <div class="hot_tel">
+                        <p class="hot_time">客服热线(9:00-6:00)</p>
+                        <p class="hot_num">15386800623</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- 头部 end -->
+     <!-- 首页导航 -->
+    <div class="navitem">
+        <ul class="nav" id="guo">
+        </ul>
+    </div>
+    

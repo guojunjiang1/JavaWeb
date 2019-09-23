@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--我的收藏-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>黑马旅游网-我的收藏</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/common.css">
+        <link rel="stylesheet" href="css/index.css">
+       <style>
+           .tab-content .row>div {
+            margin-top: 16px;
+           } 
+           .tab-content {
+            margin-bottom: 36px;
+           }
+       </style>
+       <script src="js/jquery-3.3.1.js"></script>
+       <script src="js/getParameter.js"></script>
+        <script>
+            $(function () {
+                var uid=getParameter("uid");
+                ajax(uid);
+            });
+            function ajax(uid,currentPage) {
+                $.post("collect/findAll",{uid:uid,currentPage:currentPage},function (data) {
+                    //展示页
+                    //上一页和首页
+                    var lis="";
+                    var frist='<li class="threeword" onclick="ajax('+uid+',1)"><a href="javascript:void(0)">首页</a></li>';
+                    var why=data.currentPage-1;
+                    if(why==0){
+                        var beforePage='<li class="threeword"><a href="javascript:void(0)">上一页</a></li>';
+                    }else {
+                        var beforePage='<li class="threeword" onclick="ajax('+uid+','+why+')"><a href="javascript:void(0)">上一页</a></li>';
+                    }
+                    lis+=frist;
+                    lis+=beforePage;
+                    //展示页码
+                    //一次显示10个页码，当前页码前面显示5个，后面显示4个(当页码为前五条或后五条时不做要求，和百度的显示一样)
+                    var now=data.currentPage;//当前页数
+                    var tatol=data.totalPage;//总页数
+                    var begin;
+                    var end;
+                    //当查询的总页数小于10页时
+                    if(tatol<10){
+                        begin=1;
+                        end=tatol;
+                        //当当前页小于5页时
+                    }else if(now<=5) {
+                        begin=1;
+                        end=10;
+                        //当当前页离总页数只有不到4条时
+                    }else if(now>tatol-4){
+                        begin=tatol-9;
+                        end=tatol;
+                        //正常情况下前5后4
+                    }else {
+                        begin=now-5;
+                        end=now+4;
+                    }
+                    //展示页码
+                    for(var i=begin;i<=end;i++){
+                        var lia;
+                        if(i==data.currentPage){
+                            lia='<li class="curPage" onclick="ajax('+uid+','+i+')"><a href="javascript:void(0)">'+i+'</a></li>';
+                        }else {
+                            lia='<li onclick="ajax('+uid+','+i+')"><a href="javascript:void(0)">'+i+'</a></li>';
+                        }
+                        lis+=lia;
+                    }
+                    //下一页和末页
+                    var hi=data.currentPage;
+                    var hi1=data.currentPage+1;
+                    if(hi==data.totalPage){
+                        var nextPage='<li class="threeword"><a href="javascript:void(0)">下一页</a></li>';
+                    }else {
+                        var nextPage='<li class="threeword" onclick="ajax('+uid+','+hi1+')"><a href="javascript:void(0)">下一页</a></li>';
+                    }
+                    var last='<li class="threeword" onclick="ajax('+uid+','+data.totalPage+')"><a href="javascript:void(0)">末页</a></li>';
+                    lis+=nextPage;
+                    lis+=last;
+                    $("#guo3").html(lis);
+                    //展示数据
+                    //      <div class="col-md-3">
+                    // <a href="route_detail.html">
+                    //         <img src="images/collection_pic.jpg" alt="">
+                    //         <div class="has_border">
+                    //         <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                    //         <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                    //     </div>
+                    //     </a>
+                    //     </div>
+                    var jun="";
+                    for(var i=0;i<data.list.length;i++){
+                        var e=data.list[i];
+                        var nr=
+                            '<div class="col-md-3">' +
+                            '<a href="route_detail.html?rid='+e.rid+'">' +
+                            '<img src="'+e.rimage+'" alt="">' +
+                            '<div class="has_border">' +
+                            ' <h3>'+e.rname+'</h3>' +
+                            '<div class="price">网付价<em>￥</em><strong>'+e.price+'</strong><em>起</em></div>' +
+                            '</div>' +
+                            '</a>' +
+                            '</div>';
+                        jun+=nr;
+                    }
+                    $("#guo4").html(jun);
+                    window.scrollTo(0,0);//每次加载完数据回到顶部
+                },"json");
+            }
+        </script>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+        <section id="content">
+            <section class="hemai_jx">
+                <div class="jx_top">
+                    <div class="jx_tit">
+                        <img src="images/icon_5.jpg" alt="">
+                        <span>我的收藏</span>
+                    </div>                    
+                </div>
+                <div class="jx_content">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div class="row" id="guo4">
+
+                            </div>
+                        </div>                       
+                    </div>
+                </div>
+                <div class="pageNum">
+                    <ul id="guo3">
+
+                    </ul>
+                </div>
+            </section>                      
+        </section>
+        <!-- 排行榜 end-->
+    	
+         <!--引入尾部-->
+    	<div id="footer"></div>
+        <!--导入布局js，共享header和footer-->
+        <script type="text/javascript" src="js/include.js"></script>
+    </body>
+</html>
